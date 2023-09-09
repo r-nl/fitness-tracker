@@ -1,6 +1,17 @@
 <script>
 	import { Link, Navbar } from 'konsta/svelte';
 	import dumbbellLight from '$lib/images/dumbbell-light.png';
+	import { isLoggedIn, user } from '$lib/stores/auth';
+	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
+	async function signOut() {
+		let { error } = await supabase.auth.signOut();
+		user.set(null);
+		if (error) {
+			console.error(error.message);
+		}
+		goto('/');
+	}
 </script>
 
 <Navbar>
@@ -12,8 +23,11 @@
 	</div>
 	<div slot="right">
 		<Link class="pr-4" linkProps={{ href: '/' }}>Home</Link>
-		<Link class="pr-4">Create</Link>
-		<Link class="pr-4" linkProps={{ href: '/login' }}>Login</Link>
-		<Link class="pr-4" >Logout</Link>
+		{#if $isLoggedIn}
+			<Link class="pr-4">Create</Link>
+			<Link class="pr-4" onClick={signOut}>Logout</Link>
+		{:else}
+			<Link class="pr-4" linkProps={{ href: '/login' }}>Log In</Link>
+		{/if}
 	</div>
 </Navbar>

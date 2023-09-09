@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
 	import {
 		Block,
 		Button,
@@ -12,11 +14,24 @@
 	let confirmationPassword: string;
 	let errorMessage: string;
 
-	function registerNewUser() {
+	async function registerNewUser() {
 		if (!newEmail || !newPassword || !confirmationPassword) {
 			errorMessage = 'Please fill out all forms';
 		} else {
 			errorMessage = '';
+			if (newPassword == confirmationPassword) {
+				let { data, error } = await supabase.auth.signUp({
+					email: newEmail,
+					password: newPassword
+				});
+				if (error) {
+					errorMessage = error.message;
+				} else if (data) {
+					goto('/login');
+				}
+			} else {
+				errorMessage = 'Passwords do not match';
+			}
 		}
 	}
 </script>

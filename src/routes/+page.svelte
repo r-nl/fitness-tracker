@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { user } from '$lib/stores/auth';
 	import { Block } from 'konsta/svelte';
 </script>
 
 <Block>
-	<h1>Home</h1>
+	{JSON.stringify($user)}
 </Block>

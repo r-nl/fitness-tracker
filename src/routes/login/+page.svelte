@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
+	import { user } from '$lib/stores/auth';
 	import {
 		Block,
 		Button,
@@ -11,11 +14,24 @@
 	let password: string;
 	let errorMessage: string;
 
-	function login() {
+	async function login() {
 		if (!email || !password) {
 			errorMessage = 'Please fill out all forms';
 		} else {
 			errorMessage = '';
+			let { data, error } = await supabase.auth.signInWithPassword({
+				email: email,
+				password: password
+			});
+			if (error) {
+				errorMessage = error.message;
+			} else if (data) {
+				const { data } = await supabase.auth.getUser();
+				if (data.user) {
+					user.set(data.user);
+				}
+				goto('/');
+			}
 		}
 	}
 </script>

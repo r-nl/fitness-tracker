@@ -3,5 +3,5 @@
 </script>
 
 <Block>
-	<h1>Home</h1>
+	<h1>Register</h1>
 </Block>

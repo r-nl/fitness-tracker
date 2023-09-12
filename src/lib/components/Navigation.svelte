@@ -16,15 +16,17 @@
 
 <Navbar>
 	<div slot="left">
-		<div class="h-16 flex items-center px-4">
+		<div
+			class="h-16 flex items-center px-4 select-none cursor-pointer"
+			on:click={() => goto('/')}
+		>
 			<img src={dumbbellLight} class="w-12 invert" alt="logo" />
 			<span class="px-3 text-lg font-semibold">Active Tracker</span>
 		</div>
 	</div>
 	<div slot="right">
-		<Link class="pr-4" linkProps={{ href: '/' }}>Home</Link>
 		{#if $isLoggedIn}
-			<Link class="pr-4">Create</Link>
+			<Link class="pr-4" linkProps={{ href: '/create' }}>Create</Link>
 			<Link class="pr-4" onClick={signOut}>Logout</Link>
 		{:else}
 			<Link class="pr-4" linkProps={{ href: '/login' }}>Log In</Link>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { error } from '@sveltejs/kit';
 	import { Block, Button, Card, List, ListInput } from 'konsta/svelte';
 	import { fade } from 'svelte/transition';
 	let errorMessage: string = '';
@@ -12,7 +13,7 @@
 		pace: number | null;
 	};
 	type strengthExercise = {
-		type: string | null;
+		name: string | null;
 		sets: number | null;
 		reps: number | null;
 		weight: number | null;
@@ -49,11 +50,11 @@
 				<option value="strength">Strength</option>
 			</ListInput>
 		</List>
+
 		{#if workoutType == 'cardio'}
 			<Block
 				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
 			>
-				{JSON.stringify(exercises)}
 				{#each exercises as _, index}
 					<div transition:fade>
 						<List outline inset class="p-2">
@@ -70,7 +71,7 @@
 							>
 								<option value={null}>Select type</option>
 								<option value="run">Run</option>
-								<option value="walk">walk</option>
+								<option value="walk">Walk</option>
 							</ListInput>
 							<ListInput
 								error={errorMessage}
@@ -133,7 +134,84 @@
 			</Block>
 		{/if}
 
-		{#if workoutType == 'strength'}{/if}
+		{#if workoutType == 'strength'}
+			<Block
+				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+			>
+				{#each exercises as _, index}
+					<div transition:fade>
+						<List outline inset class="p-2">
+							<div class="p-1">Exercise {index + 1}</div>
+							<ListInput
+								error={errorMessage}
+								label="Workout Name"
+								type="text"
+								placeholder="Name of exercise."
+								onChange={(changeEvent) => {
+									// @ts-ignore
+									exercises[index].name = changeEvent.target.value;
+								}}
+							/>
+							<ListInput
+								error={errorMessage}
+								label="Sets"
+								type="text"
+								placeholder="Sets"
+								onChange={(changeEvent) => {
+									// @ts-ignore
+									exercises[index].sets = changeEvent.target.value;
+								}}
+							/>
+							<ListInput
+								error={errorMessage}
+								label="Reps"
+								type="text"
+								placeholder="Reps"
+								onChange={(changeEvent) => {
+									// @ts-ignore
+									exercises[index].reps = changeEvent.target.value;
+								}}
+							/>
+							<ListInput
+								error={errorMessage}
+								label="Weight in lbs"
+								type="text"
+								placeholder="Weight"
+								onChange={(changeEvent) => {
+									// @ts-ignore
+									exercises[index].weight = changeEvent.target.value;
+								}}
+							/>
+						</List>
+					</div>
+				{/each}
+			</Block>
+			<Block class="flex">
+				<Button
+					clear
+					onClick={() => {
+						exercises.pop();
+						exercises = exercises;
+					}}
+				>
+					Remove Exercise
+				</Button>
+				<Button
+					clear
+					onClick={() => {
+						exercises.push({
+							name: null,
+							sets: null,
+							reps: null,
+							weight: null
+						});
+						exercises = exercises;
+					}}
+				>
+					Add Exercise
+				</Button>
+			</Block>
+		{/if}
 
 		<Block>
 			<Button onClick={() => {}}>Record Workout</Button>

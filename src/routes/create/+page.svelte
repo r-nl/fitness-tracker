@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
 	import { error } from '@sveltejs/kit';
 	import { Block, Button, Card, List, ListInput } from 'konsta/svelte';
 	import { fade } from 'svelte/transition';
@@ -20,6 +22,25 @@
 	};
 
 	let exercises: Array<cardioExercise | strengthExercise> = [];
+
+	async function createWorkout() {
+		const { data, error } = await supabase
+			.from('workouts')
+			.insert([
+				{
+					workout_name: workoutName,
+					workout_type: workoutType,
+					exercises: exercises
+				}
+			])
+			.select();
+		if (error) {
+			errorMessage = error.message;
+		}
+		else if ( data ){
+			goto("/")
+		}
+	}
 </script>
 
 <Block class="flex justify-center">
@@ -214,7 +235,7 @@
 		{/if}
 
 		<Block>
-			<Button onClick={() => {}}>Record Workout</Button>
+			<Button onClick={createWorkout}>Record Workout</Button>
 		</Block>
 	</Card>
 </Block>
